@@ -4,7 +4,8 @@ cd /d "%~dp0"
 title Novel Translator - Easy Install
 echo.
 echo Novel Translator Easy Installer
-echo Checks files, builds the exe, installs, then auto-launches.
+echo Copies app files, sets up its own Python env, installs, then auto-launches.
+echo No exe build - the registry entry is the install (Settings - Apps).
 echo.
 echo STORAGE (read this):
 echo   Installs to your Windows user profile drive (usually C:), not a drive picker.

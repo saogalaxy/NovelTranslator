@@ -12,21 +12,12 @@ Windows desktop app to download Syosetu novels, translate them, and save EPUBs.
    - Installs missing Python via winget or the official installer if needed.
    - Prints `READY TO GO: YES` then opens the app (`app.py` via pywebview).
 
-**Option B — Installed app (Start Menu + Settings > Apps):**
+**Option B — Installed app (Start Menu + Settings > Apps, no exe build):**
 
 1. Double-click **Install Novel Translator.bat**.
-   - Calls `tools/desktop_install.ps1`, which builds the exe with PyInstaller to `installer/publish/`, then copies it to `%LocalAppData%\NovelTranslator\app\NovelTranslator.exe`.
-   - Creates Start Menu shortcut `Novel Translator` and an uninstall entry `Novel Translator`.
-2. Launch from Start Menu afterward.
-
-**Option C — Setup.exe (Inno Setup, like SpatialLauncher):**
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_exe.ps1
-iscc installer\NovelTranslator.iss
-```
-
-Output: `installer\NovelTranslator-Setup.exe`. Installs per-user to `%LocalAppData%\NovelTranslator\app`.
+   - Calls `tools/desktop_install.ps1`, which copies app files to `%LocalAppData%\NovelTranslator\app`, creates its own `.venv` there, installs `requirements.txt`, and runs `tools/doctor.py`.
+   - Creates Start Menu shortcut `Novel Translator` (runs installed `.venv\Scripts\pythonw.exe app.py`) and a registry uninstall entry `HKCU\...\Uninstall\NovelTranslator` — that registry entry is the install, no Setup.exe needed.
+2. Launch from Start Menu afterward. Uninstall via Settings > Apps > Novel Translator.
 
 **Manual run:**
 

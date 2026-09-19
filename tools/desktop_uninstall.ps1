@@ -24,7 +24,8 @@ if (-not $Silent) {
     if ($r -ne [System.Windows.Forms.DialogResult]::Yes) { exit 0 }
 }
 
-Get-Process -Name "NovelTranslator" -ErrorAction SilentlyContinue | ForEach-Object {
+Get-Process -Name "pythonw" -ErrorAction SilentlyContinue |
+    Where-Object { $_.MainWindowTitle -match "Novel Translator" } | ForEach-Object {
     Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
 }
 Start-Sleep -Milliseconds 500
