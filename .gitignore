@@ -12,3 +12,8 @@ config.json
 *.epub
 *.pdf
 ui/desktop-bg.*
+build/
+dist/
+installer/publish/
+installer/*.exe
+installer/*.spec
