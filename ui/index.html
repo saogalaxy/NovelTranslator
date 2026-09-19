@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Novel Translator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="scene">
+    <aside class="rail glass">
+      <button data-act="open" title="Open an EPUB file">📂</button>
+      <button data-act="translate" title="Translate the selected book">文A</button>
+      <button data-act="save" title="Save settings">💾</button>
+    </aside>
+
+    <aside class="library glass">
+      <h2>Library</h2>
+      <nav class="filters">
+        <button data-filter="all" class="current">All novels</button>
+        <button data-filter="author">By author</button>
+        <button data-filter="title">By title</button>
+        <button data-filter="completed">Finished translations</button>
+        <button data-filter="recommended">Recommended</button>
+      </nav>
+      <div id="libraryPanel">
+        <p class="section-label">Your books</p>
+        <div id="books" class="book-list"></div>
+        <p class="section-label">Chapters</p>
+        <div id="chapters" class="chapter-list"></div>
+        <div id="officialCard" class="official">
+          <p class="section-label">Official releases</p>
+          <p id="officialSummary">Download a book to check Wikipedia, fansites, and Ollama web lookup.</p>
+          <ul id="officialList"></ul>
+        </div>
+      </div>
+      <div id="recsPanel" class="hidden">
+        <p class="section-label">Upcoming anime → web novels</p>
+        <p id="recsStatus" class="note">Loading recommendations…</p>
+        <div id="recs" class="recs-grid"></div>
+        <button type="button" class="ghost" id="refreshRecs">Refresh list</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header>
+        <div>
+          <h1>Novel Translator</h1>
+          <p class="hint">1. Paste a Syosetu URL &nbsp;→&nbsp; 2. Download Japanese text &nbsp;→&nbsp; 3. Translate &nbsp;→&nbsp; 4. Open the book</p>
+        </div>
+        <div class="brand">
+          <img class="quill" src="quill-icon.png" alt="" />
+          <div>Novel<br/>Translator</div>
+        </div>
+      </header>
+
+      <div id="statusBar" class="status-bar">
+        <p id="progressText" class="progress-text">Ready</p>
+        <div class="progress"><i id="bar"></i></div>
+      </div>
+
+      <section class="cards">
+        <article class="glass card">
+          <p class="step">Step 1</p>
+          <h3>Get the Japanese text</h3>
+          <label>Syosetu URL or ncode</label>
+          <input id="url" />
+          <div class="recent-urls">
+            <p class="section-label">Recent URLs</p>
+            <div id="urlHistory" class="url-history"></div>
+          </div>
+          <label class="radio"><input type="radio" name="mode" value="chapters" checked /> Novel chapters (recommended)</label>
+          <label class="radio"><input type="radio" name="mode" value="pdf" /> Official vertical PDF</label>
+          <div class="row">
+            <span>Chapters</span>
+            <input id="start" class="tiny" />
+            <span>to</span>
+            <input id="end" class="tiny" />
+          </div>
+          <div id="seriesInfo" class="series-info">
+            <p id="seriesCounts">Enter a Syosetu URL to see series length and what you already have.</p>
+            <button class="ghost" id="lookupSeries" type="button">Lookup titles</button>
+          </div>
+          <button class="primary" id="download">Download chapters</button>
+          <button class="ghost" id="downloadAll" type="button">Download all chapters</button>
+        </article>
+
+        <article class="glass card">
+          <p class="step">Step 2</p>
+          <h3>Translate</h3>
+          <label>Target language</label>
+          <input id="lang" />
+          <label>Engine</label>
+          <select id="provider"><option>ollama</option><option>openai</option></select>
+          <p class="note">ollama = this PC. openai = paid cloud key.</p>
+          <label>Model</label>
+          <select id="model"></select>
+          <button class="ghost" id="refresh">Refresh models</button>
+          <div id="cloud" class="cloud hidden">
+            <input id="apiKey" type="password" placeholder="API key" />
+            <input id="apiBase" placeholder="API base" />
+          </div>
+          <button class="primary" id="translate">Translate book</button>
+        </article>
+
+        <div class="stack">
+          <article class="glass card">
+            <p class="step">Step 3</p>
+            <h3>Save &amp; read</h3>
+            <label>Output folder</label>
+            <input id="output" />
+            <button class="ghost" id="browse">Browse...</button>
+            <button class="primary" id="openSelected">Open this book</button>
+            <button class="ghost" id="openEpub">Open a different EPUB...</button>
+            <p class="section-label">Headset (SpatialLauncher)</p>
+            <label>Quest address (auto-filled on same Wi‑Fi)</label>
+            <input id="headsetHost" placeholder="Searching… or 192.168.x.x" />
+            <div class="row">
+              <span>Port</span>
+              <input id="headsetPort" class="tiny" value="8765" />
+              <span>Token</span>
+              <input id="headsetToken" class="tiny" placeholder="auto" />
+            </div>
+            <p class="note">Keep SpatialLauncher open on the Quest. Tap Find headset — no need to copy the IP by hand.</p>
+            <p id="headsetStatus" class="note">Headset not found yet.</p>
+            <button class="ghost" id="findHeadset" type="button">Find headset</button>
+            <button class="primary" id="sendHeadset" type="button">Send EPUB to headset</button>
+            <p class="note">Google Drive library sync can come later — LAN push is the fast path after translate.</p>
+          </article>
+          <article class="glass card grow">
+            <h3>Glossary</h3>
+            <textarea id="glossary"></textarea>
+            <button class="ghost" id="save">Save settings</button>
+          </article>
+        </div>
+      </section>
+
+      <article id="logCard" class="glass log-card collapsed">
+        <button type="button" class="log-toggle" id="logToggle">Activity log</button>
+        <pre id="log"></pre>
+        <p id="status" class="log-status">Ready</p>
+      </article>
+    </main>
+  </div>
+  <div id="ask" class="ask hidden">
+    <div class="ask-card glass">
+      <p id="askText"></p>
+      <div class="ask-actions">
+        <button class="primary" id="askKeep">Keep existing</button>
+        <button class="ghost" id="askUpdate">Update / replace</button>
+        <button class="ghost" id="askCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

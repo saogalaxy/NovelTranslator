@@ -1,0 +1,14 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.config/
+output/
+cache/
+_sample.html
+_toc.html
+.env
+config.json
+*.epub
+*.pdf
+ui/desktop-bg.*
